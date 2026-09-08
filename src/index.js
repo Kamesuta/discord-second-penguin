@@ -19,8 +19,8 @@ const panel = (text, cfg) => ({
   components: [{ type: 1, components: [{ type: 2, style: 1, label: "VC入る", emoji: { name: "🐧" }, custom_id: customId(cfg) }] }],
 });
 const idleText = (cfg) => `🐧 VC入りたい人はボタンを押してね（${cfg.threshold}人集まったら通知するよ）`;
-const openText = (cfg, deadline) =>
-  `🐧だれかがVC募集しているよ！（${cfg.threshold}人集まったら通知するよ）（残り時間 <t:${Math.floor(deadline / 1000)}:R>）`;
+const openText = (cfg, session) =>
+  `🐧だれかがVC募集しているよ！（いま ${session.members.length}/${cfg.threshold}人）（${cfg.threshold}人集まったら通知するよ）（残り時間 <t:${Math.floor(session.deadline / 1000)}:R>）`;
 const mentions = (members) => members.map((m) => `<@${m.id}>`).join(" ");
 
 // ---- Discord API (interaction token のみ、Bot token 不要) ---------------------
@@ -95,7 +95,7 @@ export default {
       const userId = (i.member?.user ?? i.user).id;
       const r = await env.PENGUIN.getByName(i.message.id).join(userId, i.token, cfg);
       ctx.waitUntil(afterJoin(env, r, i.token));
-      const text = r.status === "resolved" ? idleText(cfg) : openText(cfg, r.session.deadline);
+      const text = r.status === "resolved" ? idleText(cfg) : openText(cfg, r.session);
       return json({ type: 7, data: panel(text, cfg) }); // UPDATE_MESSAGE: パネルを書き換え（編集者は表示されない = 匿名）
     }
 
