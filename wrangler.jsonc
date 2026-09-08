@@ -1,0 +1,15 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "second-penguin",
+  "main": "src/index.js",
+  "compatibility_date": "2026-09-01",
+  "vars": {
+    // Discord Developer Portal > General Information > Application ID
+    "DISCORD_APP_ID": "REPLACE_ME"
+  },
+  // DISCORD_PUBLIC_KEY は `wrangler secret put DISCORD_PUBLIC_KEY` で登録
+  "durable_objects": {
+    "bindings": [{ "name": "PENGUIN", "class_name": "PenguinSession" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["PenguinSession"] }]
+}
