@@ -1,6 +1,8 @@
 // スラッシュコマンド登録（1回だけ実行）
 //   DISCORD_APP_ID=... DISCORD_BOT_TOKEN=... npm run register
-const { DISCORD_APP_ID, DISCORD_BOT_TOKEN } = process.env;
+//   (DISCORD_CLIENT_ID / DISCORD_TOKEN でも可)
+const DISCORD_APP_ID = process.env.DISCORD_APP_ID ?? process.env.DISCORD_CLIENT_ID;
+const DISCORD_BOT_TOKEN = process.env.DISCORD_BOT_TOKEN ?? process.env.DISCORD_TOKEN;
 if (!DISCORD_APP_ID || !DISCORD_BOT_TOKEN) {
   console.error("DISCORD_APP_ID と DISCORD_BOT_TOKEN を環境変数で指定してください");
   process.exit(1);

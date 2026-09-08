@@ -31,12 +31,18 @@ VCに「入りたいけど一人目は嫌」な人が**匿名で**意思表明�
 3. デプロイ
    ```sh
    npm install
-   npx wrangler login
-   npx wrangler secret put DISCORD_PUBLIC_KEY   # Public Key を貼り付け
+   npx wrangler login                           # ブラウザが使えない環境では CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID を環境変数に
+   npx wrangler secret put DISCORD_PUBLIC_KEY   # Public Key を貼り付け（非対話なら echo -n "$KEY" | npx wrangler secret put DISCORD_PUBLIC_KEY）
    npm run deploy
    ```
-4. Developer Portal の **General Information → Interactions Endpoint URL** にデプロイされた Worker の URL を設定して保存（Discord が PING で検証する）
-5. スラッシュコマンドを登録（1回だけ。Bot → Token を使う）
+4. Developer Portal の **General Information → Interactions Endpoint URL** にデプロイされた Worker の URL を設定して保存（Discord が PING で検証する）。API からも設定できる:
+   ```sh
+   curl -X PATCH https://discord.com/api/v10/applications/@me \
+     -H "Authorization: Bot $DISCORD_BOT_TOKEN" -H "Content-Type: application/json" \
+     -d '{"interactions_endpoint_url":"https://<worker>.workers.dev/"}'
+   ```
+   `could not be verified` と出る場合は secret の反映待ち（数秒〜数十秒）か、Public Key が別アプリのもの。`GET /applications/@me` の `verify_key` が正
+5. スラッシュコマンドを登録（1回だけ。Bot → Token を使う。`DISCORD_CLIENT_ID` / `DISCORD_TOKEN` でも可）
    ```sh
    DISCORD_APP_ID=... DISCORD_BOT_TOKEN=... npm run register
    ```
